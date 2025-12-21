@@ -65,6 +65,7 @@ bool PerfectTree(Node *root)
     }
     return true;
 }
+
 bool FullTree(Node *root)
 {
     queue<Node *> q;
