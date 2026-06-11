@@ -3,145 +3,116 @@ using namespace std;
 
 int t, n, u;
 int a[105][105];
-bool visited[105];
-set<int> adj[105];
-vector<int> EC;
+int deg_vao[105], deg_ra[105];
+vector<int> ke[105];
+int visited[105];
+vector<int> dinh;
 
-void DFS(int u)
+void dfs(int x)
 {
-    visited[u] = true;
-    for (int v = 1; v <= n; v++)
+    visited[x] = 1;
+    dinh.push_back(x);
+    for (auto y : ke[x])
     {
-        if ((a[u][v] == 1 || a[v][u] == 1) && !visited[v])
+        if (!visited[y])
         {
-            DFS(v);
+            dfs(y);
         }
     }
 }
 
-bool KiemTraLienThong()
+int check_euler()
 {
-    memset(visited, 0, sizeof(visited));
-    int start = 0;
-
-    // Tìm đỉnh đầu tiên có chứa cạnh
-    for (int i = 1; i <= n && !start; i++)
-        for (int j = 1; j <= n; j++)
-            if (a[i][j] || a[j][i])
-                start = i;
-
-    // Đồ thị rỗng không có cạnh nào -> Vẫn hợp lệ
-    if (!start)
-        return true;
-
-    DFS(start);
-
-    // Quét lại: Nếu có đỉnh nào CHƯA THĂM mà lại CÓ CẠNH -> Lỗi liên thông
-    for (int i = 1; i <= n; i++)
-        if (!visited[i])
-            for (int j = 1; j <= n; j++)
-                if (a[i][j] || a[j][i])
-                    return false;
-
-    return true;
-}
-
-void solve1()
-{
-    if (!KiemTraLienThong())
-    {
-        cout << 0 << "\n";
-        return;
-    }
-    int start_nodes = 0, end_nodes = 0;
-    bool isValid = true;
-
+    dfs(1);
+    if (dinh.size() != n)
+        return 0;
+    int cnt = 0;
     for (int i = 1; i <= n; i++)
     {
-        int out_deg = adj[i].size(); // Bán bậc ra
-        int in_deg = 0;              // Bán bậc vào
-
-        for (int j = 1; j <= n; j++)
-            if (a[j][i] == 1)
-                in_deg++;
-
-        if (out_deg == in_deg)
-            continue;
-        else if (out_deg - in_deg == 1)
-            start_nodes++;
-        else if (in_deg - out_deg == 1)
-            end_nodes++;
-        else
-        {
-            isValid = false;
-            break;
-        }
+        if (abs(deg_vao[i] - deg_ra[i]) == 1)
+            cnt++;
     }
-    if (!isValid)
-        cout << 0 << "\n";
-    else if (start_nodes == 0 && end_nodes == 0)
-        cout << 1 << "\n"; // Chu trình Euler
-    else if (start_nodes == 1 && end_nodes == 1)
-        cout << 2 << "\n"; // Đường đi Euler
+    if (cnt == 2)
+        return 2;
+    if (cnt == 0)
+        return 1;
     else
-        cout << 0 << "\n";
+        return 0;
 }
 
-void euler(int v)
+void Euler_cycle()
 {
-    while (!adj[v].empty())
+    stack<int> st, ce;
+    st.push(u);
+    while (!st.empty())
     {
-        int next_v = *adj[v].begin();
-
-        adj[v].erase(next_v);
-
-        euler(next_v);
+        int check = 0;
+        int x = st.top();
+        for (int i = 1; i <= n; i++)
+        {
+            if (a[x][i])
+            {
+                check = 1;
+                st.push(i);
+                a[x][i] = 0;
+                break;
+            }
+        }
+        if (!check)
+        {
+            st.pop();
+            ce.push(x);
+        }
     }
-    EC.push_back(v);
+    while (!ce.empty())
+    {
+        cout << ce.top() << " ";
+        ce.pop();
+    }
 }
 
-void solve2()
+void nhap()
 {
-    EC.clear();
-    euler(u);
-
-    for (int i = EC.size() - 1; i >= 0; i--)
+    cin >> t;
+    if (t == 1)
     {
-        cout << EC[i] << " ";
+        cin >> n;
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                cin >> a[i][j];
+                if (a[i][j])
+                {
+                    ke[i].push_back(j);
+                    ke[j].push_back(i);
+                    deg_ra[i]++;
+                    deg_vao[j]++;
+                }
+            }
+        }
+        cout << check_euler();
     }
-    cout << "\n";
+    else
+    {
+        cin >> n >> u;
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= n; j++)
+            {
+                cin >> a[i][j];
+            }
+        }
+        Euler_cycle();
+    }
 }
 
 int main()
 {
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+
     // freopen("CT.INP", "r", stdin);
     // freopen("CT.OUT", "w", stdout);
-
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    if (!(cin >> t))
-        return 0;
-
-    if (t == 1)
-        cin >> n;
-    else
-        cin >> n >> u;
-
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 1; j <= n; j++)
-        {
-            cin >> a[i][j];
-            if (a[i][j] == 1)
-            {
-                adj[i].insert(j);
-            }
-        }
-    }
-
-    if (t == 1)
-        solve1();
-    else if (t == 2)
-        solve2();
+    nhap();
 }
