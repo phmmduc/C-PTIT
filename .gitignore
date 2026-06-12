@@ -1,13 +1,18 @@
+# VS Code local config (per-machine)
 .vscode/c_cpp_properties.json
 .vscode/settings.json
-.vscode/c_cpp_properties.json
 .vscode/cph_submit_problems.json
+
+# CPH
 .cph/
-*.json
-**/[0-9_]*
+
+# C++ binaries (no extension, no dot)
+**/[0-9]*
 !**/*.cpp
 !**/*.h
-!**/*.json
 !**/*.txt
 !**/*.md
 !**/*.py
+
+# Build folders
+build/
