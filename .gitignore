@@ -4,3 +4,10 @@
 .vscode/cph_submit_problems.json
 .cph/
 *.json
+**/[0-9_]*
+!**/*.cpp
+!**/*.h
+!**/*.json
+!**/*.txt
+!**/*.md
+!**/*.py
