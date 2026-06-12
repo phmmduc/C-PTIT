@@ -7,8 +7,8 @@ int a[105][105];
 
 int main()
 {
-    // freopen("DT.INP", "r", stdin);
-    // freopen("DT.OUT", "w", stdout);
+    freopen("DT.INP", "r", stdin);
+    freopen("DT.OUT", "w", stdout);
 
     ios::sync_with_stdio(false);
     cin.tie(0);
@@ -22,25 +22,26 @@ int main()
         degOut[u]++;
         a[u][v] = w;
     }
+
     if (t == 1)
     {
         for (int i = 1; i <= n; i++)
-        {
-            cout << degIn[i] << " " << degOut[i] << endl;
-        }
+            cout << degIn[i] << " " << degOut[i] << "\n";
     }
     else
     {
-        cout << n << " " << m << endl;
+        cout << n << "\n";
         for (int i = 1; i <= n; i++)
         {
             for (int j = 1; j <= n; j++)
             {
-                if (a[i][j] == 0 && i != j)
+                if (i != j && a[i][j] == 0)
                     a[i][j] = 10000;
-                cout << a[i][j] << " ";
+                if (j > 1)
+                    cout << " ";
+                cout << a[i][j];
             }
-            cout << endl;
+            cout << "\n";
         }
     }
 }
